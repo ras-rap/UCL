@@ -1,0 +1,2 @@
+[Security.Nested]
+deep_setting = "nested value"

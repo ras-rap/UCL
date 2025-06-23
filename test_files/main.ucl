@@ -1,0 +1,146 @@
+/*
+ * Comprehensive Example UCL Configuration File
+ */
+
+// 1. Basic Key-Value Pairs
+[Application]
+name = "UCL Demo App"
+version = "1.0.0-beta"
+release_date = '2025-07-01'
+log_level = "DEBUG"
+
+// 2. Numbers (Integer and Float)
+[Settings.Numerical]
+max_retries = 5
+timeout_seconds = 120.5
+initial_delay_ms = 1000
+
+// 3. Booleans (Case-insensitive)
+[Features]
+enable_telemetry = true
+use_beta_features = FALSE
+display_welcome_banner = TRUE
+
+// 4. Strings with Escape Sequences
+[Messages]
+welcome_text = "Hello, UCL user!\nThis is a new line."
+quoted_message = "He said, \"Hello!\""
+path_example = "C:\\Program Files\\UCL"
+tabbed_text = "Item1\tItem2"
+carriage_return_text = "Line1\rLine2"
+
+// 5. Arrays (Lists) - Including Nested Arrays
+[Users]
+admin_emails = ["admin@example.com", "support@example.com"]
+developer_ids = [101, 102, 103, 104]
+
+[UserPermissions]
+role_matrix = [
+    ["admin", ["create", "read", "update", "delete"]],
+    ["editor", ["create", "read", "update"]],
+    ["viewer", ["read"]]
+]
+supported_browsers = ["Chrome", "Firefox", ["Edge", "Safari"]]
+
+// 6. Null Value
+[OptionalConfiguration]
+secondary_endpoint = null
+cached_data_path = null
+
+// 7. Embedded JSON Objects
+[ThirdPartyIntegration]
+api_config = {
+    "url": "https://api.example.com/v1",
+    "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    },
+    "rate_limit": 100,
+    "credentials": null
+}
+
+// 8. Arithmetic Operations
+[Calculations.Numeric]
+num1 = 7
+num2 = 4
+sum = num1 + num2
+difference = num1 - num2
+product = num1 * num2
+quotient = num1 / num2
+remainder = num1 % num2
+complex_calc = (5 + 3) * 2 / (10 - 6) % 3
+
+// 9. String Concatenation
+[Concatenation.Text]
+first_name = "John"
+last_name = "Doe"
+full_greeting = "Welcome, " + first_name + " " + last_name + "!"
+number_in_string = "Version " + 2.0
+
+// 10. Variable References
+[References]
+database_host_ref = Database.Connection.host
+admin_contact = Users.admin_emails[0]
+default_port_calc = Network.default_port + 10
+
+// 11. Includes/Imports
+include "sub/db.ucl"
+include "sub/security.ucl"
+
+// 12. Environment Variable Resolution
+[RuntimeSettings]
+environment = $ENV{UCL_APP_ENV}
+api_secret = $ENV{UCL_API_SECRET_KEY}
+container_id = $ENV{UCL_HOSTNAME}
+
+// 13. Data Type Coercion/Conversion (Explicit)
+[TypeConversion]
+string_rate = "2.75"
+shipping_cost_str = "10"
+converted_rate_float = string_rate.float
+converted_cost_int = shipping_cost_str.int
+total_shipping = converted_rate_float + converted_cost_int
+
+num_status = 1
+is_active_flag = num_status.bool
+
+float_pi = 3.14159
+pi_as_string = float_pi.string + " is PI"
+
+string_bool_false = "No"
+is_allowed = string_bool_false.bool
+
+zero_num_to_bool = 0.bool
+non_zero_num_to_bool = 100.bool
+bool_to_string = true.string
+
+// 14. Nested Section Example
+[Network]
+default_port = 80
+[Network.HTTP]
+enable_compression = true
+max_upload_size_mb = 50
+
+[Network.HTTP.CORS]
+enable = true
+allowed_origins = ["https://myfrontend.com", "http://localhost:3000"]
+max_age_seconds = 86400
+
+// 15. More complex section names and redefinition
+[Config.Level1.Level2]
+param_a = 100
+
+[Config.Level1]
+param_b = 200
+
+[Config.Level1.Level2]
+param_a = 150
+
+[Defaults]
+Application.log_level = "INFO"
+Application.new_setting = "Default Value"
+Database.Connection.timeout_ms = 5000
+Network.HTTP.CORS.max_age_seconds = 3600
+RuntimeSettings.environment = "development"
+OptionalConfiguration.cached_data_path = "/tmp/cache"
+NonExistent.key = "This should also be added"
