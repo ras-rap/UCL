@@ -1,0 +1,156 @@
+/*
+ * Comprehensive Example UCL Configuration File
+ *
+ * This file demonstrates all features of the Universal Configuration Language (UCL)
+ * as defined in the specification.
+ */
+
+// 1. Basic Key-Value Pairs
+[Application]
+name = "UCL Demo App"
+version = "1.0.0-beta"
+release_date = '2025-07-01' // Single-quoted string example
+
+// 2. Numbers (Integer and Float)
+[Settings.Numerical]
+max_retries = 5
+timeout_seconds = 120.5
+initial_delay_ms = 1000
+
+// 3. Booleans (Case-insensitive)
+[Features]
+enable_telemetry = true
+use_beta_features = FALSE
+display_welcome_banner = TRUE
+
+// 4. Strings with Escape Sequences
+[Messages]
+welcome_text = "Hello, UCL user!\nThis is a new line."
+quoted_message = "He said, \"Hello!\""
+path_example = "C:\\Program Files\\UCL"
+
+// 5. Arrays (Lists) - Including Nested Arrays
+[Users]
+admin_emails = ["admin@example.com", "support@example.com"]
+developer_ids = [101, 102, 103, 104]
+
+[UserPermissions]
+// Nested arrays demonstrating roles and capabilities
+role_matrix = [
+    ["admin", ["create", "read", "update", "delete"]],
+    ["editor", ["create", "read", "update"]],
+    ["viewer", ["read"]]
+]
+supported_browsers = ["Chrome", "Firefox", ["Edge", "Safari"]]
+
+// 6. Null Value
+[OptionalConfiguration]
+secondary_endpoint = null // This setting is explicitly not configured
+// 'cached_data_path' will get a default from the [Defaults] section if one is provided there
+// If no default, it remains undefined.
+
+// 7. Embedded JSON Objects
+[ThirdPartyIntegration]
+api_config = {
+    "url": "https://api.example.com/v1",
+    "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    },
+    "rate_limit": 100
+}
+
+// 8. Arithmetic Operations
+[Calculations.Numeric]
+base_price = 15.75
+quantity = 7
+total_amount = base_price * quantity // 110.25 (Multiplication)
+discount = total_amount / 10       // 11.025 (Division)
+final_price = total_amount - discount // 99.225 (Subtraction)
+items_per_box = 3
+remaining_items_on_shelf = quantity % items_per_box // 1 (Modulo)
+
+// 9. String Concatenation
+[Concatenation.Text]
+first_name = "John"
+last_name = "Doe"
+full_greeting = "Welcome, " + first_name + " " + last_name + "!" // "Welcome, John Doe!"
+
+// 10. Variable References (Within the same section and across sections via path)
+[References]
+// Note: These will only resolve correctly if the referenced sections/keys are defined *before* this reference.
+// For example, if [Database.Connection] is in an included file that comes after this, it might fail.
+database_host_ref = Database.Connection.host // Refers to a key defined (or included) earlier
+admin_contact = Users.admin_emails[0]    // Referencing an element in an array
+default_port_calc = Network.default_port + 10 // Uses Network.default_port from below
+
+// 11. Includes/Imports (Assuming these files exist alongside this one)
+// The content below is what would conceptually be in these included files.
+// include "config/database_connection.ucl"
+// include "config/security_settings.ucl"
+
+// --- Content that would be in 'config/database_connection.ucl' if included ---
+[Database.Connection]
+driver = "pgsql"
+host = "localhost" // This host is overridden if 'Database.Connection.host' is also in [Defaults] and set.
+user = "app_user"
+// --- End of 'config/database_connection.ucl' content ---
+
+// --- Content that would be in 'config/security_settings.ucl' if included ---
+[Security]
+enable_encryption = true
+min_password_length = 12
+// --- End of 'config/security_settings.ucl' content ---
+
+// 12. Environment Variable Resolution
+[RuntimeSettings]
+environment = $ENV{APP_ENV} // If APP_ENV is "production", environment will be "production". If unset, it will be null.
+api_secret = $ENV{API_SECRET_KEY} // Expects API_SECRET_KEY to be set in environment
+container_id = $ENV{HOSTNAME} // Uses HOSTNAME if available, else will be null
+
+// 13. Data Type Coercion/Conversion (Explicit)
+[TypeConversion]
+string_rate = "2.75"
+shipping_cost_str = "10"
+converted_rate_float = string_rate.float // 2.75 (float)
+converted_cost_int = shipping_cost_str.int // 10 (integer)
+total_shipping = converted_rate_float + converted_cost_int // 12.75 (float)
+
+num_status = 1
+is_active_flag = num_status.bool // true (boolean)
+
+float_pi = 3.14159
+pi_as_string = float_pi.string + " is PI" // "3.14159 is PI" (string)
+
+string_bool_false = "No"
+is_allowed = string_bool_false.bool // false (boolean)
+
+zero_num_to_bool = 0.bool // false
+non_zero_num_to_bool = 100.bool // true
+
+
+// 14. Nested Section Example
+[Network]
+default_port = 80
+[Network.HTTP]
+enable_compression = true
+max_upload_size_mb = 50
+
+[Network.HTTP.CORS]
+enable = true
+allowed_origins = ["https://myfrontend.com", "http://localhost:3000"]
+
+
+/*
+ * 15. Defaults Section
+ *
+ * This section MUST be at the very end of the file.
+ * Values defined here will only be applied if the corresponding key
+ * is either not defined anywhere else in the file, or is explicitly set to `null`.
+ */
+[Defaults]
+Application.log_level = "INFO" // If [Application] log_level is not set, it defaults to "INFO".
+Database.Connection.timeout_ms = 5000 // If Database.Connection.timeout_ms is not set, it defaults to 5000.
+Network.HTTP.CORS.max_age_seconds = 3600 // A new setting, will take this default if not defined.
+RuntimeSettings.environment = "development" // If APP_ENV is not set (and thus RuntimeSettings.environment is null), defaults to "development".
+OptionalConfiguration.cached_data_path = "/tmp/cache" // If OptionalConfiguration.cached_data_path is not set or null, defaults to this path.
