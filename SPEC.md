@@ -187,6 +187,7 @@ difference = num1 - num2 // 3
 product = num1 * num2    // 28
 quotient = num1 / num2   // 1.75
 remainder = num1 % num2  // 3
+complex_calc = (5 + 3) * 2 / (10 - 6) % 3
 ```
 
 ### 5.2 String Concatenation

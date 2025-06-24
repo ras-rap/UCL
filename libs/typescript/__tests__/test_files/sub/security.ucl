@@ -1,0 +1,8 @@
+[Security]
+enable_encryption = true
+min_password_length = 12
+
+include "nested.ucl"
+
+[Security.Advanced]
+enable_audit_logging = true

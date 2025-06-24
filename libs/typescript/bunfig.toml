@@ -1,0 +1,4 @@
+# bunfig.toml
+[test]
+include = ["__tests__/**/*.test.ts"]
+exclude = ["src/**/*.ts"]
